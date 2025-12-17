@@ -7,26 +7,30 @@ import {
   TouchableOpacity,
   Linking,
   Alert,
-  Button
+  Button,
+  ScrollView,
 } from "react-native";
 import React, { Component, useState } from "react";
 import { Picker } from "@react-native-picker/picker";
 
-const Home = () => {
+const Home = ({ navigation }) => {
   // 1. Radio Button State (Memory)
-  const [radioChoice, setRadioChoice] = useState("Pick Options to display");
+  const [radioChoice, setRadioChoice] = useState("");
 
   // 2. Dropdown State (Memory)
-  const [dropdownChoice, setDropdownChoice] = useState("Null");
+  const [dropdownChoice, setDropdownChoice] = useState("");
 
   // 3. Alert Function
   const showAlert = () => {
     Alert.alert(
       "Summary of Choices",
-      `Radio Choice: ${radioChoice}\nDropdown Color: ${dropdownChoice}`,
+      `Radio Choice: ${radioChoice}\nDropdown Color: ${dropdownChoice}\nTextbox value: ${textboxVal}`,
       [{ text: "OK" }]
     );
   };
+
+  // 2. Textbox State (Memory)
+  const [textboxVal, setTextboxVal] = useState("");
 
   async function handleWebPress() {
     const url = "https://www.srh-university.de/de/";
@@ -38,13 +42,27 @@ const Home = () => {
     }
   }
 
+  const handleClick = () => {
+    navigation.navigate("Home2");
+  };
+
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Home</Text>
+    <ScrollView
+      contentContainerStyle={{
+        flexGrow: 1,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       <Image
         source={require("../assets/images/srh_logo.png")}
         style={{ width: 200, height: 200 }}
       />
+
+      <TouchableOpacity onPress={handleWebPress}>
+        <Text style={styles.text}>Tap this text to open the SRH website</Text>
+      </TouchableOpacity>
+
       <TextInput
         placeholder="Enter something"
         style={{
@@ -55,10 +73,9 @@ const Home = () => {
           marginTop: 20,
           paddingLeft: 10,
         }}
+        value={textboxVal}
+        onChangeText={setTextboxVal}
       />
-      <TouchableOpacity onPress={handleWebPress}>
-        <Text style={styles.text}>Tap this card to open the website</Text>
-      </TouchableOpacity>
 
       <Text style={styles.header}>Demo</Text>
 
@@ -90,8 +107,6 @@ const Home = () => {
 
       <Text style={styles.statusText}>Your Selection: {radioChoice}</Text>
 
-      <View style={styles.divider} />
-
       {/* ----------------------------------- */}
       {/* 2. DROPDOWN WITH STYLE */}
       {/* ----------------------------------- */}
@@ -111,8 +126,6 @@ const Home = () => {
 
       <Text style={styles.statusText}>Current Color: {dropdownChoice}</Text>
 
-      <View style={styles.divider} />
-
       {/* ----------------------------------- */}
       {/* 3. ALERT BUTTON */}
       {/* ----------------------------------- */}
@@ -121,23 +134,24 @@ const Home = () => {
         onPress={showAlert}
         color="#007AFF" // iOS blue color
       />
-    </View>
+
+      <Button
+        title="Go to next screen"
+        onPress={handleClick}
+        style={styles.button}
+      />
+    </ScrollView>
   );
 };
 
 export default Home;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1, // Takes up the whole screen
-    padding: 30,
-    backgroundColor: "#fff",
-    justifyContent: "center", // Center content vertically
-  },
+  
   header: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 30,
+    marginBottom: 10,
     textAlign: "center",
     color: "#333",
   },
@@ -147,11 +161,6 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginBottom: 10,
     color: "#555",
-  },
-  divider: {
-    height: 1,
-    backgroundColor: "#eee",
-    marginVertical: 30,
   },
   statusText: {
     marginTop: 10,
@@ -200,7 +209,11 @@ const styles = StyleSheet.create({
   },
   picker: {
     height: 50,
-    width: "100%",
-    color: "#333",
+    width: 150,
+    color: "rgba(51, 51, 51, 1)",
+  },
+  button: {
+    marginTop: 50,
+    marginBottom: 50,
   },
 });
